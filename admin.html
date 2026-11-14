@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — hardovere & SodaBarblga</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="viewport">
+    <div class="app-window admin-window">
+      <header class="top-bar">
+        <div class="typewriter-wrap">
+          <span>admin_panel</span>
+          <span class="cursor-caret"></span>
+        </div>
+        <div class="top-actions">
+          <span id="server-indicator" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);display:flex;align-items:center;">
+            <span id="server-dot" class="status-dot"></span>
+            <span id="server-status-short">проверка...</span>
+          </span>
+          <button id="admin-theme-toggle" class="theme-switch">светлая тема</button>
+          <a href="index.html" class="theme-switch" style="text-decoration:none;">← на сайт</a>
+        </div>
+      </header>
+
+      <!-- Экран входа -->
+      <div id="admin-login-view" style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;">
+        <div class="login-box" style="margin:0;width:100%;max-width:360px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;">Вход в панель управления</div>
+          <div style="font-size:12.5px;color:var(--muted);">Введите пароль администратора для редактирования портфолио и профилей.</div>
+          <input id="admin-pass-input" type="password" class="input" placeholder="Пароль (3151020)...">
+          <div id="admin-login-err" style="color:#ff5555;font-size:12px;min-height:16px;"></div>
+          <button id="admin-login-btn" class="btn">Войти</button>
+        </div>
+      </div>
+
+      <!-- Основной интерфейс с боковым меню по вкладкам -->
+      <div id="admin-dash-view" class="window-body" style="display:none;">
+        <aside class="side-nav">
+          <nav class="nav-list">
+            <button class="nav-item active" data-atab="portfolio">
+              <span>портфолио</span>
+              <span id="nav-works-count" class="nav-badge">0</span>
+            </button>
+            <button class="nav-item" data-atab="profiles">
+              <span>профили</span>
+              <span class="nav-key">2</span>
+            </button>
+            <button class="nav-item" data-atab="langs">
+              <span>языки и %</span>
+              <span class="nav-key">3</span>
+            </button>
+            <button class="nav-item" data-atab="storage">
+              <span>файлы и база</span>
+              <span class="nav-key">4</span>
+            </button>
+          </nav>
+
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button id="quick-save-btn" class="btn" style="width:100%;">💾 Сохранить всё</button>
+            <div class="nav-footer" style="text-align:center;">hardovere & SodaBarblga</div>
+          </div>
+        </aside>
+
+        <section class="content-area">
+
+          <!-- ВКЛАДКА 1: ПОРТФОЛИО (Кастомная загрузка + живые превью) -->
+          <div id="atab-portfolio" class="tab-section active">
+            <div class="admin-section-header">
+              <div class="admin-section-title" id="form-mode-title">Добавить работу в портфолио</div>
+              <button id="cancel-edit-btn" class="btn btn-ghost" style="display:none;padding:6px 14px;">Отменить редактирование</button>
+            </div>
+
+            <div class="admin-block" style="margin-bottom:26px;">
+              <div class="admin-grid" style="margin-bottom:0;">
+                <div>
+                  <label class="field-label">Название проекта / работы</label>
+                  <input id="work-title" class="input" placeholder="Например: Кастомный локатор DMC / Веб-панель">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div>
+                    <label class="field-label">Автор</label>
+                    <select id="work-author" class="select">
+                      <option value="hardovere & SodaBarblga">hardovere & SodaBarblga</option>
+                      <option value="hardovere">hardovere</option>
+                      <option value="SodaBarblga">SodaBarblga</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="field-label">Тип медиа</label>
+                    <select id="work-type" class="select">
+                      <option value="video">Видео (.mp4 / .webm)</option>
+                      <option value="photo">Фото / Скриншот</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Кастомные карточки выбора файлов с Drag & Drop и живым превью -->
+              <div class="drop-grid">
+                <div>
+                  <label class="field-label">1. Основной файл (видео или скриншот)</label>
+                  <div id="media-drop-card" class="drop-card">
+                    <input id="work-file-input" type="file" accept="video/*,image/*">
+                    <div class="drop-empty-state">
+                      <div class="drop-icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                          <polyline points="17 8 12 3 7 8"/>
+                          <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                      </div>
+                      <div class="drop-title">Выбрать видео или фото</div>
+                      <div class="drop-hint">Перетащите файл сюда или нажмите (MP4, WEBP, PNG, AVIF)</div>
+                    </div>
+
+                    <div class="drop-preview-wrap">
+                      <video id="admin-video-preview" muted playsinline controls></video>
+                      <img id="admin-media-img-preview" src="" alt="" style="display:none;">
+                      <div class="drop-badge-bar">
+                        <span id="media-file-label" class="drop-file-name">файл выбран</span>
+                        <div style="display:flex;gap:5px;">
+                          <button type="button" id="capture-frame-btn" class="drop-mini-btn" title="Сделать текущий кадр видео обложкой">📸 Кадр в превью</button>
+                          <button type="button" id="change-media-btn" class="drop-mini-btn">Заменить</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input id="work-url" class="input" style="margin-top:8px;" placeholder="Путь: assets/videos/video.mp4">
+                </div>
+
+                <div>
+                  <label class="field-label">2. Превью-обложка (отображается до запуска и на паузе)</label>
+                  <div id="preview-drop-card" class="drop-card">
+                    <input id="work-preview-file" type="file" accept="image/*">
+                    <div class="drop-empty-state">
+                      <div class="drop-icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                      </div>
+                      <div class="drop-title">Выбрать превью-картинку</div>
+                      <div class="drop-hint">PNG, JPG, WEBP, AVIF (или нажмите «📸 Кадр в превью» слева)</div>
+                    </div>
+
+                    <div class="drop-preview-wrap">
+                      <img id="admin-cover-preview" src="" alt="">
+                      <div class="drop-badge-bar">
+                        <span id="preview-file-label" class="drop-file-name">обложка</span>
+                        <div style="display:flex;gap:5px;">
+                          <button type="button" id="clear-preview-btn" class="drop-mini-btn">Очистить</button>
+                          <button type="button" id="change-preview-btn" class="drop-mini-btn">Заменить</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input id="work-preview-url" class="input" style="margin-top:8px;" placeholder="Путь: assets/photos/preview.png (необязательно)">
+                </div>
+              </div>
+
+              <div>
+                <label class="field-label">Описание работы</label>
+                <textarea id="work-desc" class="textarea" style="min-height:54px;" placeholder="Краткое описание механики, скрипта или интерфейса..."></textarea>
+              </div>
+
+              <div>
+                <label class="field-label">Использованные языки (учитываются в полосе процентов на сайте)</label>
+                <div id="work-langs-checks" class="checkbox-row"></div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:10px;padding-top:4px;">
+                <button id="add-work-btn" class="btn">＋ Добавить в портфолио</button>
+                <button id="reset-work-form-btn" type="button" class="btn btn-ghost">Очистить поля</button>
+              </div>
+            </div>
+
+            <!-- Визуальная сетка добавленных работ с превью -->
+            <div class="admin-section-header" style="margin-top:8px;">
+              <div class="admin-section-title">Работы в портфолио</div>
+              <div class="filter-pills">
+                <button class="pill-btn admin-wfilter-btn active" data-awfilter="all">все</button>
+                <button class="pill-btn admin-wfilter-btn" data-awfilter="hardovere">hardovere</button>
+                <button class="pill-btn admin-wfilter-btn" data-awfilter="sodabarblga">SodaBarblga</button>
+              </div>
+            </div>
+
+            <div id="admin-works-list" class="admin-works-grid"></div>
+          </div>
+
+          <!-- ВКЛАДКА 2: ПРОФИЛИ (hardovere & SodaBarblga) -->
+          <div id="atab-profiles" class="tab-section">
+            <div class="admin-section-header">
+              <div class="admin-section-title">Карточки разработчиков («О нас»)</div>
+              <button id="save-all-btn" class="btn">Сохранить профили</button>
+            </div>
+
+            <div class="admin-grid">
+              <!-- hardovere -->
+              <div class="admin-block">
+                <div class="profile-nick">hardovere</div>
+                <div class="avatar-uploader-row">
+                  <img id="hardovere-avatar-preview" class="avatar-preview-lg" src="assets/avatars/hardovere.jpg" alt="hardovere">
+                  <div class="avatar-upload-controls">
+                    <label class="file-trigger-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <span>Загрузить новую аватарку</span>
+                      <input id="hardovere-avatar-file" type="file" accept="image/*">
+                    </label>
+                    <input id="hardovere-avatar" class="input" placeholder="assets/avatars/hardovere.jpg">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="field-label">Подпись / Стек под ником</label>
+                  <input id="hardovere-role" class="input" placeholder="Denizen / Python / Rust">
+                </div>
+
+                <div>
+                  <label class="field-label">О себе</label>
+                  <textarea id="hardovere-bio" class="textarea"></textarea>
+                </div>
+
+                <div>
+                  <label class="field-label">Языки в карточке профиля</label>
+                  <div id="hardovere-langs-checks" class="checkbox-row"></div>
+                </div>
+
+                <div>
+                  <label class="field-label">Контакты (GitHub / Telegram / Discord)</label>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                    <input id="hardovere-github" class="input" placeholder="GitHub URL">
+                    <input id="hardovere-telegram" class="input" placeholder="@telegram">
+                    <input id="hardovere-discord" class="input" placeholder="discord">
+                  </div>
+                </div>
+              </div>
+
+              <!-- SodaBarblga -->
+              <div class="admin-block">
+                <div class="profile-nick">SodaBarblga</div>
+                <div class="avatar-uploader-row">
+                  <img id="sodabarblga-avatar-preview" class="avatar-preview-lg" src="assets/avatars/sodabarblga.png" alt="SodaBarblga">
+                  <div class="avatar-upload-controls">
+                    <label class="file-trigger-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <span>Загрузить новую аватарку</span>
+                      <input id="sodabarblga-avatar-file" type="file" accept="image/*">
+                    </label>
+                    <input id="sodabarblga-avatar" class="input" placeholder="assets/avatars/sodabarblga.png">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="field-label">Подпись / Стек под ником</label>
+                  <input id="sodabarblga-role" class="input" placeholder="React / TypeScript / Python">
+                </div>
+
+                <div>
+                  <label class="field-label">О себе</label>
+                  <textarea id="sodabarblga-bio" class="textarea"></textarea>
+                </div>
+
+                <div>
+                  <label class="field-label">Языки в карточке профиля</label>
+                  <div id="sodabarblga-langs-checks" class="checkbox-row"></div>
+                </div>
+
+                <div>
+                  <label class="field-label">Контакты (GitHub / Telegram / Discord)</label>
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                    <input id="sodabarblga-github" class="input" placeholder="GitHub URL">
+                    <input id="sodabarblga-telegram" class="input" placeholder="@telegram">
+                    <input id="sodabarblga-discord" class="input" placeholder="discord">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ВКЛАДКА 3: ЯЗЫКИ И АВТО-РАСЧЁТ % -->
+          <div id="atab-langs" class="tab-section">
+            <div class="admin-section-header">
+              <div class="admin-section-title">Предпросмотр распределения языков</div>
+              <div class="filter-pills">
+                <button class="pill-btn admin-lfilter-btn active" data-alfilter="all">общий стек</button>
+                <button class="pill-btn admin-lfilter-btn" data-alfilter="hardovere">hardovere</button>
+                <button class="pill-btn admin-lfilter-btn" data-alfilter="sodabarblga">SodaBarblga</button>
+              </div>
+            </div>
+
+            <div class="admin-block">
+              <div id="admin-lang-mode-note" style="font-size:12.5px;color:var(--muted);"></div>
+              <div id="admin-gh-bar" class="gh-bar" style="margin:12px 0 18px;"></div>
+              <div id="admin-auto-stats" class="langs-grid"></div>
+            </div>
+          </div>
+
+          <!-- ВКЛАДКА 4: ФАЙЛЫ И БАЗА -->
+          <div id="atab-storage" class="tab-section">
+            <div class="admin-section-header">
+              <div class="admin-section-title">Хранилище, файлы проекта и резервная копия</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button id="export-data-btn" class="btn btn-ghost">⬇ Скачать js/data.js</button>
+                <button id="reset-cache-btn" class="btn btn-ghost" style="color:#f87171;">Сбросить localStorage</button>
+              </div>
+            </div>
+
+            <div class="status-banner">
+              <div id="storage-mode-text">Проверка подключения к server.py...</div>
+              <button id="bind-folder-btn" class="btn btn-ghost" style="white-space:nowrap;">Привязать папку проекта</button>
+            </div>
+
+            <div class="admin-block">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div class="profile-nick" style="font-size:14px;">Файлы в папке assets/</div>
+                <button id="refresh-assets-btn" class="icon-btn">🔄 Обновить список</button>
+              </div>
+              <div id="assets-library-container" style="font-size:12.5px;color:var(--muted);">
+                Запустите <code>server.py</code>, чтобы просматривать файлы в папках <code>assets/videos</code>, <code>assets/photos</code> и <code>assets/avatars</code>.
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

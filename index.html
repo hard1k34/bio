@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hardovere & SodaBarblga</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <main class="viewport">
+    <div class="app-window">
+      <header class="top-bar">
+        <div class="typewriter-wrap">
+          <span id="typewriter-text">hardovere</span>
+          <span class="cursor-caret"></span>
+        </div>
+        <div class="top-actions">
+          <button id="theme-toggle" class="theme-switch">светлая тема</button>
+        </div>
+      </header>
+
+      <div class="window-body">
+        <aside class="side-nav">
+          <nav class="nav-list">
+            <button class="nav-item active" data-tab="about">
+              <span>о нас</span>
+              <span class="nav-key">1</span>
+            </button>
+            <button class="nav-item" data-tab="portfolio">
+              <span>портфолио</span>
+              <span class="nav-key">2</span>
+            </button>
+            <button class="nav-item" data-tab="langs">
+              <span>языки</span>
+              <span class="nav-key">3</span>
+            </button>
+          </nav>
+          <div class="nav-footer">hardovere & SodaBarblga</div>
+        </aside>
+
+        <section class="content-area">
+          <!-- О нас + контакты сразу внутри карточек -->
+          <div id="tab-about" class="tab-section active">
+            <div id="profiles-container" class="profiles-grid"></div>
+          </div>
+
+          <!-- Портфолио -->
+          <div id="tab-portfolio" class="tab-section">
+            <div class="portfolio-top">
+              <div class="filter-pills">
+                <button class="pill-btn work-filter-btn active" data-wfilter="all">все работы</button>
+                <button class="pill-btn work-filter-btn" data-wfilter="hardovere">hardovere</button>
+                <button class="pill-btn work-filter-btn" data-wfilter="sodabarblga">SodaBarblga</button>
+              </div>
+            </div>
+            <div id="portfolio-container"></div>
+          </div>
+
+          <!-- Языки -->
+          <div id="tab-langs" class="tab-section">
+            <div class="filter-pills">
+              <button class="pill-btn lang-filter-btn active" data-filter="all">общий стек</button>
+              <button class="pill-btn lang-filter-btn" data-filter="hardovere">hardovere</button>
+              <button class="pill-btn lang-filter-btn" data-filter="sodabarblga">SodaBarblga</button>
+            </div>
+            <div id="gh-lang-bar" class="gh-bar"></div>
+            <div id="langs-grid" class="langs-grid"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
